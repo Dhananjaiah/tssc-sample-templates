@@ -1,0 +1,82 @@
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  namespace: default
+  name: ibmc-hcc-org 
+  description: IBM Consulting Hybrid Cloud Console Organization
+  title: IBM Consulting Hybrid Cloud Console Organization
+  tags:
+    - ibmc-hcc-org
+  annotations:
+    backstage.io/source-location: url:https://github.com/ibmc-hcc-sandbox/petstore-app/tree/master/
+
+spec:
+  owner: ibmc-hcc-sandbox/ibmc-hcc-core-team
+  type: organization
+  lifecycle: production
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  namespace: default
+  name: petstore-project
+  description: Petstore project
+  title: Petstore Project
+  tags:
+    - petstore-project  
+  annotations:
+    backstage.io/source-location: url:https://github.com/ibmc-hcc-sandbox/petstore-app/tree/master/
+     
+spec:
+  owner: ibmc-hcc-sandbox/ibmc-hcc-core-team
+  type: project
+  lifecycle: production
+  subdomainOf: ibmc-hcc-org
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  namespace: default
+  name: petstore-app
+  title: Petstore Application
+  description: Petstore Application
+  annotations:
+    backstage.io/source-location: url:https://github.com/ibmc-hcc-sandbox/petstore-app/tree/master/
+    github.com/project-slug: ibmc-hcc-sandbox/ibmc-hcc-core-team
+  tags:
+    - petstore-app
+spec:
+  type: application
+  lifecycle: production
+  owner: ibmc-hcc-sandbox/ibmc-hcc-core-team
+  system: petstore-app
+  domain: petstore-project
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  namespace: default
+  name: petstore-webapp
+  description: Petstore WebApp
+  annotations:
+    backstage.io/source-location: url:https://github.com/ibmc-hcc-sandbox/petstore-app/tree/master/
+spec:
+  type: service
+  owner: ibmc-hcc-sandbox/ibmc-hcc-core-team
+  lifecycle: production
+  system: petstore-app
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  namespace: default
+  name: petstore-api
+  description: Petstore API
+  annotations:
+    backstage.io/source-location: url:https://github.com/ibmc-hcc-sandbox/petstore-app/tree/master/
+spec:
+  type: service
+  owner: ibmc-hcc-sandbox/ibmc-hcc-core-team
+  lifecycle: production
+  system: petstore-app

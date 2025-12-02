@@ -1,0 +1,124 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(60, 60, 120, 0.12);
+}
+
+.title {
+  text-align: center;
+  font-size: 2.2rem;
+  color: #6366f1;
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+}
+
+.card {
+  background: #f3f4f6;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(99, 102, 241, 0.08);
+  padding: 20px 18px;
+  margin-bottom: 18px;
+}
+
+.pet-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+}
+
+.pet-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #e0e7ff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.pet-item:hover {
+  background: #c7d2fe;
+}
+
+.pet-name {
+  font-weight: 500;
+  color: #3730a3;
+}
+.pet-species {
+  font-size: 0.98em;
+  color: #6366f1;
+  background: #eef2ff;
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
+.pet-detail p {
+  margin: 8px 0;
+  font-size: 1.08em;
+}
+
+.pet-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pet-form input {
+  padding: 8px 10px;
+  border: 1px solid #c7d2fe;
+  border-radius: 7px;
+  font-size: 1em;
+  outline: none;
+  transition: border 0.2s;
+}
+.pet-form input:focus {
+  border-color: #6366f1;
+}
+
+button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 7px;
+  background: #6366f1;
+  color: #fff;
+  font-size: 1em;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+button:hover, .add-btn:hover, .back-btn:hover, .submit-btn:hover {
+  background: #3730a3;
+}
+
+.add-btn, .back-btn, .submit-btn {
+  margin-right: 8px;
+}
+
+.error {
+  color: #ef4444;
+  background: #fee2e2;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-top: 10px;
+  font-size: 0.98em;
+}
+
+.success {
+  color: #22c55e;
+  background: #dcfce7;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-top: 10px;
+  font-size: 0.98em;
+}
