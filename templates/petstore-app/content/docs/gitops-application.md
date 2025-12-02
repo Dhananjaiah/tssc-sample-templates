@@ -1,8 +1,13 @@
-# GitOps Http Application Sample
+# GitOps Petstore API Application
 
-## HTTP Application 
-This Gitops sample provides a standard HTTP component consisting of a deployment, service and route. 
+## Petstore API Application 
+This GitOps configuration provides deployment manifests for the Petstore API, a Python FastAPI application that provides a RESTful API for managing pets in a pet store.
 
-The following day 2 edit/update operations supported:
-    set/get image - updates the image for this component 
-    set/get replicas
+The GitOps repository contains Kubernetes manifests for deploying the Petstore API including:
+- Deployment with container configuration
+- Service for internal networking
+- Route for external access
+
+The following day 2 edit/update operations are supported:
+    set/get image - updates the container image for the Petstore API
+    set/get replicas - adjusts the number of running pod replicas

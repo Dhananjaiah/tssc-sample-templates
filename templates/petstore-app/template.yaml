@@ -53,7 +53,7 @@ spec:
           title: Repository Owner
           type: string
           ui:help: The organization, user or project that this repo will belong to
-          
+
         repoName:
           title: Repository Name
           type: string
@@ -81,10 +81,10 @@ spec:
                   default: tekton
                   enum:
                     - tekton
-                    - jenkins 
+                    - jenkins
                   enumNames:
                     - Tekton (SLSA 3)
-                    - Jenkins (SLSA 2) 
+                    - Jenkins (SLSA 2)
             - required:
                 - gitlabServer
                 - ciType
@@ -102,10 +102,10 @@ spec:
                   default: tekton
                   enum:
                     - tekton
-                    - jenkins 
+                    - jenkins
                   enumNames:
                     - Tekton (SLSA 3)
-                    - Jenkins (SLSA 2) 
+                    - Jenkins (SLSA 2)
     - title: Deployment information
       required:
         - imageRegistry
@@ -123,7 +123,7 @@ spec:
           title: Image Organization
           type: string
           description: The organization, user or project that this repo will belong to
-          
+
         imageName:
           title: Image Name
           type: string
@@ -153,7 +153,7 @@ spec:
           namespace: ${{ parameters.namespace }}
           repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops
           srcRepoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}
-          
+
     # Renders all the template variables into the files and directory names and content, and places the result in the workspace.
     - id: fetch-skeleton
       name: Fetch Skeleton
@@ -169,17 +169,17 @@ spec:
           gitopsSecretName: ${{ 'gitops-auth-secret' if parameters.hostType === 'GitHub' else 'gitlab-auth-secret' }}
           image: '${{ parameters.imageRegistry }}/${{ parameters.imageOrg }}/${{ parameters.imageName }}'
           tags: '["python", "fastapi", "petstore", "sscs", "sbom", "acs"]'
-          repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops  
-          owner: ${{ parameters.owner }} 
+          repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops
+          owner: ${{ parameters.owner }}
           repoSlug: '${{ parameters.imageOrg }}/${{ parameters.imageName }}'
-          defaultBranch: ${{ parameters.branch }} 
-          isTekton: ${{ parameters.ciType === 'tekton' }} 
-          isJenkins: ${{ parameters.ciType === 'jenkins' }} 
+          defaultBranch: ${{ parameters.branch }}
+          isTekton: ${{ parameters.ciType === 'tekton' }}
+          isJenkins: ${{ parameters.ciType === 'jenkins' }}
     - id: fetch-ci-skeleton
       name: Fetch CI Components
       action: fetch:template
       input:
-        url: ../../skeleton/ci/source-repo/${{ parameters.ciType}} 
+        url: ../../skeleton/ci/source-repo/${{ parameters.ciType}}
         values:
           name: ${{ parameters.name }}
           namespace: ${{ parameters.namespace }}
@@ -189,10 +189,10 @@ spec:
           gitopsSecretName: ${{ 'gitops-auth-secret' if parameters.hostType === 'GitHub' else 'gitlab-auth-secret' }}
           image: '${{ parameters.imageRegistry }}/${{ parameters.imageOrg }}/${{ parameters.imageName }}'
           tags: '["python", "fastapi", "petstore", "sscs", "sbom", "acs"]'
-          repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops  
-          owner: ${{ parameters.owner }} 
+          repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops
+          owner: ${{ parameters.owner }}
           repoSlug: '${{ parameters.imageOrg }}/${{ parameters.imageName }}'
-          defaultBranch: ${{ parameters.branch }}  
+          defaultBranch: ${{ parameters.branch }}
     # This action creates a new GitHub repository and publishes the files in the workspace directory to the repository.
     - id: publish-github
       name: Publish Repository to GitHub
@@ -236,7 +236,7 @@ spec:
           srcRepoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}
           argoComponent: './components/${{ parameters.name }}/overlays/development'
           argoComponentOverlays: './components/${{ parameters.name }}/overlays'
-          owner: ${{ parameters.owner }} 
+          owner: ${{ parameters.owner }}
           image: quay.io/redhat-appstudio/dance-bootstrap-app:latest # bootstrap app image as placeholder
           # actual src image, should be used by tekton PR pipeline to update the image in gitops repo
           srcImage: '${{ parameters.imageRegistry }}/${{ parameters.imageOrg }}/${{ parameters.imageName }}'
@@ -244,8 +244,8 @@ spec:
           argoNS: rhtap
           argoProject: default
           secretRef: ${{ parameters.hostType === 'GitLab' }}
-          isTekton: ${{ parameters.ciType === 'tekton' }} 
-          isJenkins: ${{ parameters.ciType === 'jenkins' }} 
+          isTekton: ${{ parameters.ciType === 'tekton' }}
+          isJenkins: ${{ parameters.ciType === 'jenkins' }}
           gitSecret: gitlab-auth-secret
           gitSecretKey: password
           webhookSecret: pipelines-secret
@@ -256,7 +256,7 @@ spec:
       name: Fetch Gitops CI Components
       action: fetch:template
       input:
-        url: ../../skeleton/ci/gitops-template/${{ parameters.ciType}} 
+        url: ../../skeleton/ci/gitops-template/${{ parameters.ciType}}
         targetPath: gitops
         values:
           name: ${{ parameters.name }}
@@ -270,7 +270,7 @@ spec:
           srcRepoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}
           argoComponent: './components/${{ parameters.name }}/overlays/development'
           argoComponentOverlays: './components/${{ parameters.name }}/overlays'
-          owner: ${{ parameters.owner }} 
+          owner: ${{ parameters.owner }}
           image: quay.io/redhat-appstudio/dance-bootstrap-app:latest # bootstrap app image as placeholder
           # actual src image, should be used by tekton PR pipeline to update the image in gitops repo
           srcImage: '${{ parameters.imageRegistry }}/${{ parameters.imageOrg }}/${{ parameters.imageName }}'
@@ -278,8 +278,8 @@ spec:
           argoNS: rhtap
           argoProject: default
           secretRef: ${{ parameters.hostType === 'GitLab' }}
-          isTekton: ${{ parameters.ciType === 'tekton' }} 
-          isJenkins: ${{ parameters.ciType === 'jenkins' }} 
+          isTekton: ${{ parameters.ciType === 'tekton' }}
+          isJenkins: ${{ parameters.ciType === 'jenkins' }}
           gitSecret: gitlab-auth-secret
           gitSecretKey: password
           webhookSecret: pipelines-secret
