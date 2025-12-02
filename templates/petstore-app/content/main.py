@@ -1,11 +1,11 @@
 import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Depends, Response
 from pydantic import BaseModel
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column, Integer, String, select
-import asyncio
 from fastapi.middleware.cors import CORSMiddleware
 import yaml
 from fastapi.openapi.utils import get_openapi
@@ -27,7 +27,16 @@ engine = create_async_engine(DATABASE_URL, echo=True)
 Base = declarative_base()
 async_session = async_sessionmaker(engine, expire_on_commit=False)
 
-app = FastAPI(title="Petstore API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    logger.info("Database tables created")
+    yield
+
+
+app = FastAPI(title="Petstore API", lifespan=lifespan)
 
 openapi_schema = get_openapi(
     title="Petstore API",
@@ -38,7 +47,7 @@ openapi_schema = get_openapi(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -59,18 +68,12 @@ async def get_db():
     async with async_session() as session:
         yield session
 
-@app.on_event("startup")
-async def startup():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    logger.info("Database tables created")
-
 @app.get("/pets", response_model=List[Pet])
 async def list_pets(db: AsyncSession = Depends(get_db)):
     logger.info("Listing all pets")
     result = await db.execute(select(PetModel))
     pets = result.scalars().all()
-    return [Pet(id=getattr(pet, "id"), name=getattr(pet, "name"), species=getattr(pet, "species")) for pet in pets]
+    return [Pet(id=pet.id, name=pet.name, species=pet.species) for pet in pets]
 
 @app.get("/pets/{pet_id}", response_model=Pet)
 async def get_pet(pet_id: int, db: AsyncSession = Depends(get_db)):
@@ -80,7 +83,7 @@ async def get_pet(pet_id: int, db: AsyncSession = Depends(get_db)):
         logger.warning(f"Pet with id={pet_id} not found")
         raise HTTPException(status_code=404, detail="Pet not found")
     logger.info(f"Found pet: {pet}")
-    return Pet(id=getattr(pet, "id"), name=getattr(pet, "name"), species=getattr(pet, "species"))
+    return Pet(id=pet.id, name=pet.name, species=pet.species)
 
 @app.post("/pets", response_model=Pet)
 async def add_pet(pet: Pet, db: AsyncSession = Depends(get_db)):
@@ -94,7 +97,7 @@ async def add_pet(pet: Pet, db: AsyncSession = Depends(get_db)):
     await db.commit()
     await db.refresh(pet_obj)
     logger.info(f"Pet added: {pet_obj}")
-    return Pet(id=getattr(pet_obj, "id"), name=getattr(pet_obj, "name"), species=getattr(pet_obj, "species"))
+    return Pet(id=pet_obj.id, name=pet_obj.name, species=pet_obj.species)
 
 @app.get("/openapi.yaml", response_class=Response)
 def get_openapi_yaml():
